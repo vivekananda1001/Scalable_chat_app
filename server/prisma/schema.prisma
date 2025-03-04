@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(191)
+  email      String      @unique
+  provider   String
+  oauth_id   String
+  image      String?
+  created_at DateTime    @default(now())
+  ChatGroup ChatGroup[]
+
+  @@map("users")
+}
+
+model ChatGroup {
+  int String @id @default(uuid()) @db.Uuid
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int 
+  title String @db.VarChar(191)
+  passcode String @db.VarChar(191)
+  created_at DateTime @default(now()) 
+}
